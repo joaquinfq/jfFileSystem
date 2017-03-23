@@ -1,5 +1,5 @@
 {
-    "version"     : "0.1.0",
+    "version"     : "0.1.1",
     "name"        : "jf-file-system",
     "author"      : "Joaquín Fernández",
     "description" : "Class for manipulating file system in a synchronous way with useful methods.",
