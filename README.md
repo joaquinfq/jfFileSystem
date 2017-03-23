@@ -59,9 +59,9 @@ class Generator extends jfFileSystem {
 
 #### Translating texts
 
-All texts are in spanish but if you want to translate you can overwrite 
-`log` method in child class (as in the previous example) or to listen
-`log` event.
+All texts are in spanish but if you want to translate them you can 
+overwrite `log` method in child class (as in the previous example)
+or to listen `log` event.
 
 ```js
 const jfFileSystem = require('jf-file-system');

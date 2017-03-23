@@ -184,7 +184,7 @@ module.exports = class jfFileSystem extends Events {
         }
         else
         {
-            this.log('info', 'Directorio no encontrado: %s', dir);
+            this.log('warn', 'Directorio no encontrado: %s', dir);
         }
         return _files.sort();
     }
