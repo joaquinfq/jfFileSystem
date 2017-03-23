@@ -1,0 +1,27 @@
+{
+    "version"     : "0.1.0",
+    "name"        : "jf-file-system",
+    "author"      : "Joaquín Fernández",
+    "description" : "Class for manipulating file system in a synchronous way with useful methods.",
+    "keywords"    : [
+        "exists",
+        "directory",
+        "directories",
+        "file",
+        "files",
+        "find",
+        "mk",
+        "mkdir",
+        "rm",
+        "rmdir",
+        "save",
+        "scandir",
+        "write"
+    ],
+    "license"     : "MIT",
+    "homepage"    : "http://www.joaquinfernandez.net",
+    "repository"  : {
+        "type" : "git",
+        "url"  : "https://github.com/joaquinfq/jfFileSystem"
+    }
+}
