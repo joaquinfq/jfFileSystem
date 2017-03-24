@@ -37,21 +37,27 @@ module.exports = class jfFileSystem extends Events {
      * @method log
      *
      * @param {String}   level Nivel de la traza ('error', 'info', etc).
+     * @param {String}   name  Nombre de la traza que permita identificarla. Por defecto es el nombre de la clase.
      * @param {String}   label Texto a mostrar con los placeholders incluidos.
      * @param {...Array} args  Argumentos a usar para reemplazar los placeholders de la etiqueta.
      */
-    log(level, label, ...args)
+    log(level, name, label, ...args)
     {
+        if (!name)
+        {
+            name = this.constructor.name;
+        }
         const _payload = {
             level,
             label,
+            name,
             args
         };
         this.emit('log', _payload);
         // Si algún manejador elimina la etiqueta, evitamos mostrar la traza por pantalla.
         if (_payload.label)
         {
-            console.log(_payload.label, ..._payload.args);
+            console.log(`[${name}] ${_payload.label}`, ..._payload.args);
         }
     }
 
@@ -69,7 +75,7 @@ module.exports = class jfFileSystem extends Events {
         {
             this.mkdir(path.dirname(dir));
             fs.mkdirSync(dir);
-            this.log('info', 'Directorio %s creado', dir);
+            this.log('info', '', 'Directorio %s creado', dir);
         }
     }
 
@@ -110,7 +116,7 @@ module.exports = class jfFileSystem extends Events {
             const _hasFilter = typeof filter === 'function';
             if (level > 0)
             {
-                this.log('info', 'Eliminando archivos en %s', path.relative(__dirname, dir));
+                this.log('info', '', 'Eliminando archivos en %s', path.relative(__dirname, dir));
             }
             fs.readdirSync(dir).forEach(
                 (file) =>
@@ -136,7 +142,7 @@ module.exports = class jfFileSystem extends Events {
             }
             if (level > 0)
             {
-                this.log('info', '%s archivo(s) eliminado(s)', _count);
+                this.log('info', '', '%s archivo(s) eliminado(s)', _count);
             }
         }
         return _count;
@@ -185,12 +191,12 @@ module.exports = class jfFileSystem extends Events {
             }
             else
             {
-                this.log('info', 'Tipo de archivo no soportado: %s', dir);
+                this.log('info', '', 'Tipo de archivo no soportado: %s', dir);
             }
         }
         else
         {
-            this.log('warn', 'Directorio no encontrado: %s', dir);
+            this.log('warn', '', 'Directorio no encontrado: %s', dir);
         }
         return _files.sort();
     }
@@ -206,7 +212,7 @@ module.exports = class jfFileSystem extends Events {
     write(filename, content)
     {
         this.mkdir(path.dirname(filename));
-        this.log('info', 'Escribiendo %s bytes en el archivo %s', content.length, filename);
+        this.log('info', '', 'Escribiendo %s bytes en el archivo %s', content.length, filename);
         fs.writeFileSync(filename, content, 'utf8');
     }
 

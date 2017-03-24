@@ -42,11 +42,11 @@ class Generator extends jfFileSystem {
         );
     }
     
-    log(level, label, ...args)
+    log(level, name, label, ...args)
     {
         // Translating logs.
         // tr is a map with translations.
-        super.log(level, tr[label], ...args);
+        super.log(level, name, tr[label], ...args);
     }
     
     parse(data)
@@ -110,7 +110,7 @@ fs.on(
         }
     }
 );
-fs.log('info', 'Test %s', 'pl1'); // Omitted because is not an error.
-fs.log('error', 'File %s already exists', '/tmp/exists.js'); // Filename in cyan
-fs.log('error', 'Filesize %s', 1324); // Number formatted in green as 1,3k
+fs.log('info', '', 'Test %s', 'pl1'); // Omitted because is not an error.
+fs.log('error', '', 'File %s already exists', '/tmp/exists.js'); // Filename in cyan
+fs.log('error', '', 'Filesize %s', 1324); // Number formatted in green as 1,3k
 ```
