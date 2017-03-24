@@ -2,6 +2,12 @@ const Events = require('events');
 const fs     = require('fs');
 const path   = require('path');
 /**
+ * Instancia para usar como singleton la clase.
+ *
+ * @type {null|jf.FileSystem}
+ */
+let instance  = null;
+/**
  * Clase de utilidad para manejar el sistema de archivos de manera síncrona.
  *
  * @namespace jf
@@ -202,5 +208,20 @@ module.exports = class jfFileSystem extends Events {
         this.mkdir(path.dirname(filename));
         this.log('info', 'Escribiendo %s bytes en el archivo %s', content.length, filename);
         fs.writeFileSync(filename, content, 'utf8');
+    }
+
+    /**
+     * Devuelve una instancia de la clase.
+     * Permite usar la clase como un singleton.
+     *
+     * @return {null|jf.FileSystem}
+     */
+    static i()
+    {
+        if (!instance)
+        {
+            instance = new this();
+        }
+        return instance;
     }
 };
