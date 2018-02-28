@@ -61,11 +61,12 @@ module.exports = class jfFileSystem extends Events
      */
     findUp(directory, filename)
     {
-        if (directory[0] !== '/')
+        if (directory[0] !== path.sep)
         {
-            directory = path.join(process.cwd(), directory);
+            directory = path.resolve(process.cwd(), directory);
         }
-        while (directory !== '/' && !this.exists(directory, filename))
+        const _root = path.parse(directory).root;
+        while (directory !== _root && !this.exists(directory, filename))
         {
             directory = path.dirname(directory);
         }
