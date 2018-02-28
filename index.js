@@ -52,6 +52,28 @@ module.exports = class jfFileSystem extends Events
     }
 
     /**
+     * Encuentra un archivo recorriendo los directorios padres.
+     *
+     * @param {String} directory Ruta del directorio a partir del cual se buscará.
+     * @param {String} filename  Nombre del archivo a buscar.
+     *
+     * @return {String}
+     */
+    findUp(directory, filename)
+    {
+        if (directory[0] !== '/')
+        {
+            directory = path.join(process.cwd(), directory);
+        }
+        while (directory !== '/' && !this.exists(directory, filename))
+        {
+            directory = path.dirname(directory);
+        }
+
+        return directory;
+    }
+
+    /**
      * Indica si la ruta especificada es un directorio.
      *
      * @method isDirectory
