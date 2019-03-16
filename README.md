@@ -1,4 +1,4 @@
-# jfFileSystem [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
+# @jf/fs [![stable](http://badges.github.io/stability-badges/dist/stable.svg)](http://github.com/badges/stability-badges)
 
 Class for manipulating file system in a synchronous way using `NodeJS`.
 
@@ -8,14 +8,14 @@ I use it mainly as base for file generators.
 
 ## Usage
 
-[![npm install jfFileSystem](https://nodei.co/npm/jf-file-system.png?compact=true)](https://npmjs.org/package/jf-file-system/)
+[![npm install @jf/fs](https://nodei.co/npm/@jf/fs.png?compact=true)](https://npmjs.org/package/@jf/fs/)
 
 ### Example
 
 #### Generator class
 
 ```js
-const jfFileSystem = require('jf-file-system');
+const jfFileSystem = require('@jf/fs');
 const path         = require('path');
 const tr           = require('./translations');
 
@@ -64,10 +64,9 @@ overwrite `log` method in child class (as in the previous example)
 or to listen `log` event.
 
 ```js
-const jfFileSystem = require('jf-file-system');
 const chalk        = require('chalk');
 const siNumber     = require('si-number');
-const fs           = new jfFileSystem();
+const fs           = require('@jf/fs').i();
 fs.on(
     'log',
     data =>
