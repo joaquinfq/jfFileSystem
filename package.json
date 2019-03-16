@@ -1,5 +1,5 @@
 {
-    "version": "3.0.0",
+    "version": "3.0.1",
     "name": "@jf/fs",
     "author": "Joaquín Fernández",
     "description": "Class for manipulating file system in a synchronous way with useful methods.",

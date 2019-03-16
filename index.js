@@ -4,7 +4,7 @@ const path   = require('path');
 /**
  * Instancia para usar como singleton la clase.
  *
- * @type {null|jf.FileSystem}
+ * @type {jf.FileSystem|null}
  */
 let instance = null;
 /**
@@ -21,8 +21,8 @@ module.exports = class jfFileSystem extends Events
      *
      * @method copy
      *
-     * @param {String} fromDir Directorio origen.
-     * @param {String} toDir   Directorio destino.
+     * @param {string} fromDir Directorio origen.
+     * @param {string} toDir   Directorio destino.
      */
     copy(fromDir, toDir)
     {
@@ -42,11 +42,11 @@ module.exports = class jfFileSystem extends Events
      *
      * @method exists
      *
-     * @param {String} pathTo Ruta a verificar.
+     * @param {string} pathname Ruta a verificar.
      *
-     * @return {Boolean} `true` si la ruta existe.
+     * @return {boolean} `true` si la ruta existe.
      */
-    exists(pathTo)
+    exists(pathname)
     {
         return fs.existsSync(path.join(...arguments));
     }
@@ -54,26 +54,35 @@ module.exports = class jfFileSystem extends Events
     /**
      * Encuentra un archivo recorriendo los directorios padres.
      *
-     * @param {String}  directory Ruta del directorio a partir del cual se buscará.
-     * @param {String}  filename  Nombre del archivo a buscar.
-     * @param {Boolean} asFile    Devolver la ruta del archivo en vez de la ruta del directorio.
+     * @method findUp
      *
-     * @return {String}
+     * @param {string}  directory Ruta del directorio a partir del cual se buscará.
+     * @param {string}  filename  Nombre del archivo a buscar.
+     * @param {boolean} asFile    Devolver la ruta del archivo en vez de la ruta del directorio.
+     *
+     * @return {string|null} Ruta que contiene el archivo o `null` si no se encontró el archivo.
      */
     findUp(directory, filename, asFile = false)
     {
-        directory   = path.resolve(directory);
-        const _root = path.parse(directory).root;
-        while (directory !== _root && !this.exists(directory, filename))
+        let _result = path.resolve(directory);
+        const _root = path.parse(_result).root;
+        while (_result !== _root && !this.exists(_result, filename))
         {
-            directory = path.dirname(directory);
+            _result = path.dirname(_result);
         }
-        if (asFile && this.exists(directory, filename))
+        if (this.exists(_result, filename))
         {
-            directory = path.join(directory, filename);
+            if (asFile)
+            {
+                _result = path.join(_result, filename);
+            }
+        }
+        else
+        {
+            _result = null;
         }
 
-        return directory;
+        return _result;
     }
 
     /**
@@ -81,9 +90,9 @@ module.exports = class jfFileSystem extends Events
      *
      * @method isDirectory
      *
-     * @param {String} path Ruta a verificar.
+     * @param {string} path Ruta a verificar.
      *
-     * @return {Boolean} `true` si la ruta existe y es un directorio.
+     * @return {boolean} `true` si la ruta existe y es un directorio.
      */
     isDirectory(path)
     {
@@ -99,7 +108,7 @@ module.exports = class jfFileSystem extends Events
      *
      * @param {String} path Ruta a verificar.
      *
-     * @return {Boolean} `true` si la ruta existe y es un archivo.
+     * @return {boolean} `true` si la ruta existe y es un archivo.
      */
     isFile(path)
     {
@@ -119,10 +128,10 @@ module.exports = class jfFileSystem extends Events
      *
      * @method log
      *
-     * @param {String}   level Nivel de la traza ('error', 'info', etc).
-     * @param {String}   name  Nombre de la traza que permita identificarla. Por defecto es el nombre de la clase.
-     * @param {String}   label Texto a mostrar con los placeholders incluidos.
-     * @param {...Array} args  Argumentos a usar para reemplazar los placeholders de la etiqueta.
+     * @param {string}   level Nivel de la traza ('error', 'info', etc).
+     * @param {string}   name  Nombre de la traza que permita identificarla. Por defecto es el nombre de la clase.
+     * @param {string}   label Texto a mostrar con los placeholders incluidos.
+     * @param {...array} args  Argumentos a usar para reemplazar los placeholders de la etiqueta.
      */
     log(level, name, label, ...args)
     {
@@ -149,7 +158,7 @@ module.exports = class jfFileSystem extends Events
      *
      * @method mkdir
      *
-     * @param {String} dir Ruta a crear.
+     * @param {string} dir Ruta a crear.
      */
     mkdir(dir)
     {
@@ -167,10 +176,10 @@ module.exports = class jfFileSystem extends Events
      *
      * @method read
      *
-     * @param {String} filename Ruta del archivo leer.
-     * @param {String} encoding Codificación del archivo a leer.
+     * @param {string} filename Ruta del archivo leer.
+     * @param {string} encoding Codificación del archivo a leer.
      *
-     * @return {String|Buffer} Contenido del archivo.
+     * @return {string|Buffer} Contenido del archivo.
      */
     read(filename, encoding = 'utf8')
     {
@@ -182,10 +191,10 @@ module.exports = class jfFileSystem extends Events
      *
      * @method rename
      *
-     * @param {String} oldPath Ruta del archivo a renombrar.
-     * @param {String} newPath Nueva ruta del archivo.
+     * @param {string} oldPath Ruta del archivo a renombrar.
+     * @param {string} newPath Nueva ruta del archivo.
      *
-     * @return {String} Contenido del archivo.
+     * @return {string} Contenido del archivo.
      */
     rename(oldPath, newPath)
     {
@@ -203,16 +212,16 @@ module.exports = class jfFileSystem extends Events
      *
      * @method rmdir
      *
-     * @param {String}  dir    Ruta al directorio del cual se eliminará TODO su contenido.
-     * @param {Number?} level  Número de niveles que mostrarán trazas.
-     * @param {RegExp?} filter Expresión regular a usar para filtrar los archivos que se eliminarán.
+     * @param {string}           dir    Ruta al directorio del cual se eliminará TODO su contenido.
+     * @param {number?}          level  Número de niveles que mostrarán trazas.
+     * @param {function|RegExp?} filter Expresión regular a usar para filtrar los archivos que se eliminarán.
      *
-     * @return {Number} Total de archivos eliminados.
+     * @return {number} Total de archivos eliminados.
      */
     rmdir(dir, level = 0, filter = null)
     {
         let _count = 0;
-        if (!filter || filter.test(dir))
+        if (!filter || (typeof filter === 'function' && filter(dir)) || (filter instanceof RegExp && filter.test(dir)))
         {
             const _stat = fs.lstatSync(dir);
             if (_stat.isDirectory())
@@ -249,15 +258,15 @@ module.exports = class jfFileSystem extends Events
      *
      * @method scandir
      *
-     * @param {String}  dir    Directorio donde empezará la búsqueda.
-     * @param {RegExp?} filter Expresión regular para filtrar el resultado.
+     * @param {string}           dir    Directorio donde empezará la búsqueda.
+     * @param {function|RegExp?} filter Expresión regular para filtrar el resultado.
      *
-     * @return {String[]} Listado de archivos.
+     * @return {string[]} Listado de archivos.
      */
     scandir(dir, filter = null)
     {
         const _files = [];
-        if (!filter || filter.test(dir))
+        if (!filter || (typeof filter === 'function' && filter(dir)) || (filter instanceof RegExp && filter.test(dir)))
         {
             if (this.exists(dir))
             {
@@ -292,9 +301,9 @@ module.exports = class jfFileSystem extends Events
      *
      * @method write
      *
-     * @param {String}        filename Ruta del archivo escribir.
-     * @param {Buffer|String} content  Contenido del archivo a crear.
-     * @param {String}        encoding Codificación del archivo a leer.
+     * @param {string}        filename Ruta del archivo escribir.
+     * @param {string|Buffer} content  Contenido del archivo a crear.
+     * @param {string}        encoding Codificación del archivo a leer.
      */
     write(filename, content, encoding = 'utf8')
     {
@@ -307,6 +316,8 @@ module.exports = class jfFileSystem extends Events
      * Devuelve una instancia de la clase.
      * Permite usar la clase como un singleton.
      *
+     * @method i
+     *
      * @return {null|jf.FileSystem}
      */
     static i()
@@ -315,6 +326,7 @@ module.exports = class jfFileSystem extends Events
         {
             instance = new this();
         }
+
         return instance;
     }
 };
